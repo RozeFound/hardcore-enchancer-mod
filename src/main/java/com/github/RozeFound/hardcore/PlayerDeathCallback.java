@@ -1,4 +1,4 @@
-package com.example;
+package com.github.RozeFound.hardcore;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;

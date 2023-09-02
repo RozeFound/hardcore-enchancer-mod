@@ -1,13 +1,13 @@
-package com.example;
+package com.github.RozeFound.hardcore;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.stat.Stats;
 import net.minecraft.text.Text;
-import static net.minecraft.server.command.CommandManager.*;
+import net.minecraft.world.GameMode;
+import net.minecraft.world.World;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static net.minecraft.server.command.CommandManager.*;
 
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -21,11 +21,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 
-public class ExampleMod implements ModInitializer {
-	// This logger is used to write text to the console and the log file.
-	// It is considered best practice to use your mod id as the logger's name.
-	// That way, it's clear which mod wrote info, warnings, and errors.
-    public static final Logger LOGGER = LoggerFactory.getLogger("modid");
+public class Main implements ModInitializer {
 
 	public int lifesGetHandler(CommandContext<ServerCommandSource> context, ServerPlayerEntity player) throws CommandSyntaxException {
 
@@ -76,9 +72,15 @@ public class ExampleMod implements ModInitializer {
 
 		gifter.increaseStat(Stats.DEATHS, lifes);
 		player.increaseStat(Stats.DEATHS, -lifes);
+
+		if (getDeaths(player) == 9) {
+			var spawn_coords = player.getServer().getWorld(World.OVERWORLD).getSpawnPos();
+			player.teleport(spawn_coords.getX(), spawn_coords.getY(), spawn_coords.getZ());
+			player.changeGameMode(GameMode.SURVIVAL);
+		}
 		
-		setMaxHealth(gifter, lifes * 2);
-		setMaxHealth(player, lifes * 2);
+		setMaxHealth(gifter, 20 - (getDeaths(gifter) * 2));
+		setMaxHealth(player, 20 - (getDeaths(player) * 2));
 
 		var string = String.format("Given %d lifes to %s", lifes, player.getEntityName());
 		context.getSource().sendMessage(Text.literal(string));
@@ -125,16 +127,20 @@ public class ExampleMod implements ModInitializer {
 	public void setMaxHealth(ServerPlayerEntity player, int maxHealth) {
 		var attribute = player.getAttributes().getCustomInstance(EntityAttributes.GENERIC_MAX_HEALTH);
 		attribute.setBaseValue(maxHealth);
+		player.setHealth(Math.min(maxHealth, player.getHealth()));
 	}
 
 	public void onPlayerDeath(ServerPlayerEntity player, DamageSource source) {
 
-		if (source.getAttacker() instanceof ServerPlayerEntity atacker) {
+		if (player.getPrimeAdversary() instanceof ServerPlayerEntity attacker) {
 
-			atacker.increaseStat(Stats.DEATHS, 1);
+			if (attacker == player) return;
 
-			if (getDeaths(atacker) == 10)
-				atacker.kill();
+			attacker.increaseStat(Stats.DEATHS, 1);
+			setMaxHealth(attacker, 20 - (getDeaths(attacker) * 2));
+
+			if (getDeaths(attacker) == 10)
+				attacker.kill();
 
 			player.increaseStat(Stats.DEATHS, -2);
 

@@ -1,34 +1,30 @@
 {
 	"schemaVersion": 1,
-	"id": "modid",
+	"id": "hardcore-enchancer",
 	"version": "${version}",
-	"name": "Example mod",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"name": "Hardcore Enchancer",
+	"description": "Enables 10 lives for hardcore",
 	"authors": [
-		"Me!"
+		"RozeFound (RozeFound@proton.me)"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"sources": "https://github.com/RozeFound/hardcore-enchancer-mod"
 	},
 	"license": "CC0-1.0",
 	"icon": "assets/modid/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"com.example.ExampleMod"
+			"com.github.RozeFound.hardcore.Main"
 		]
 	},
 	"mixins": [
-		"modid.mixins.json"
+		"com.github.RozeFound.hardcore.mixins.json"
 	],
 	"depends": {
 		"fabricloader": ">=0.14.21",
 		"minecraft": "~1.20.1",
 		"java": ">=17",
 		"fabric-api": "*"
-	},
-	"suggests": {
-		"another-mod": "*"
 	}
 }

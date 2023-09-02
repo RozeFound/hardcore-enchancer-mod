@@ -1,4 +1,4 @@
-package com.example.mixin;
+package com.github.RozeFound.hardcore.mixin;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.Inject;

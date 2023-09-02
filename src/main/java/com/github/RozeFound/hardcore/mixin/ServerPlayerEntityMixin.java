@@ -1,4 +1,4 @@
-package com.example.mixin;
+package com.github.RozeFound.hardcore.mixin;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
@@ -8,8 +8,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.example.PlayerDeathCallback;
-import com.example.PlayerKillPlayerCallback;
+import com.github.RozeFound.hardcore.PlayerDeathCallback;
+import com.github.RozeFound.hardcore.PlayerKillPlayerCallback;
 
 @Mixin(ServerPlayerEntity.class)
 public class ServerPlayerEntityMixin {
