@@ -52,35 +52,35 @@ public class Main implements ModInitializer {
 
 		var gifter = context.getSource().getPlayer();
 		var player = EntityArgumentType.getPlayer(context, "player");
-
-		if (gifter == player) {
-			context.getSource().sendError(Text.literal("You can't gift yourself lifes"));
-			return -1;
-		}
-
 		var lifes = context.getArgument("lifes", Integer.class);
 
-		if (lifes > 10 - getDeaths(gifter)) {
-			context.getSource().sendError(Text.literal("You don't have enough lifes"));
-			return -1;
-		} else if (lifes > getDeaths(player)) lifes = getDeaths(player);
 
-		if (lifes == 0) { 
-			context.getSource().sendError(Text.literal("You can't give 0 lifes"));
-			return -1;
-		}
+		if (gifter == player) {
+		context.getSource().sendError(Text.literal("You can't gift yourself lifes"));
+		return -1; } if (lifes > 10 - getDeaths(gifter)) {
+		context.getSource().sendError(Text.literal("You don't have enough lifes"));
+		return -1; } if (lifes == 0) { 
+		context.getSource().sendError(Text.literal("You can't give 0 lifes"));
+		return -1; } if (lifes < 0) {
+		context.getSource().sendError(Text.literal("You can't give negative lifes"));
+		return -1; }
 
 		gifter.increaseStat(Stats.DEATHS, lifes);
 		player.increaseStat(Stats.DEATHS, -lifes);
 
-		if (getDeaths(player) == 9) {
+		var gifter_deaths = getDeaths(gifter);
+		var player_deaths = getDeaths(player);
+
+		if (player_deaths == 9) {
 			var spawn_coords = player.getServer().getWorld(World.OVERWORLD).getSpawnPos();
 			player.teleport(spawn_coords.getX(), spawn_coords.getY(), spawn_coords.getZ());
 			player.changeGameMode(GameMode.SURVIVAL);
 		}
-		
-		setMaxHealth(gifter, 20 - (getDeaths(gifter) * 2));
-		setMaxHealth(player, 20 - (getDeaths(player) * 2));
+
+		setMaxHealth(player, 20 - (player_deaths * 2));
+
+		if (gifter_deaths == 10) gifter.kill();
+		else setMaxHealth(gifter, 20 - (gifter_deaths * 2));
 
 		var string = String.format("Given %d lifes to %s", lifes, player.getEntityName());
 		context.getSource().sendMessage(Text.literal(string));
